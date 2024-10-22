@@ -52,7 +52,7 @@ class OrdersRepository:
     def edit_many_registries(self) -> None:
         collection = self.__db_connection.get_collection(self.__collection_name)
         collection.update_many(
-            { "itens": { "$exists": True }  }, # Filtro
+            { "itens.refrigerante": { "$exists": True }  }, # Filtro
             { "$set": {"itens.refrigerante.quantidade": 100} } # Edição
         )
     def edit_registry_with_increment(self) -> None:
@@ -61,3 +61,11 @@ class OrdersRepository:
             { "_id": ObjectId("67165266c5cc553a2ca0a3c9")}, # Filtro
             { "$inc": {"itens.pizza.quantidade": 50} } # Edição
         )
+
+    def delete_registry(self) -> None:
+        collection = self.__db_connection.get_collection(self.__collection_name)
+        collection.delete_one( { "_id": ObjectId("67165266c5cc553a2ca0a3c9" )} )
+
+    def delete_many_registries(self) -> None:
+        collection = self.__db_connection.get_collection(self.__collection_name)
+        collection.delete_many( { "itens.refrigerante": { "$exists": True } })
