@@ -27,7 +27,7 @@ class OrdersRepository:
     def select_many_with_properties(self, doc_filter: dict) -> list:
         collection = self.__db_connection.get_collection(self.__collection_name)
         data = collection.find(
-            doc_filter, # filtro de busco
+            doc_filter, # filtro de busca
             {"_id": 0, "cupom": 0} # Opções de retorno
         )
         return data
@@ -41,3 +41,23 @@ class OrdersRepository:
         collection = self.__db_connection.get_collection(self.__collection_name)
         data = collection.find_one({ "_id": ObjectId(object_id)})
         return data
+
+    def edit_registry(self) -> None:
+        collection = self.__db_connection.get_collection(self.__collection_name)
+        collection.update_one(
+            { "_id": ObjectId("67165266c5cc553a2ca0a3c9") }, # Filtro
+            { "$set": {"itens.pizza.quantidade": 30} } # Edição
+        )
+
+    def edit_many_registries(self) -> None:
+        collection = self.__db_connection.get_collection(self.__collection_name)
+        collection.update_many(
+            { "itens": { "$exists": True }  }, # Filtro
+            { "$set": {"itens.refrigerante.quantidade": 100} } # Edição
+        )
+    def edit_registry_with_increment(self) -> None:
+        collection = self.__db_connection.get_collection(self.__collection_name)
+        collection.update_one(
+            { "_id": ObjectId("67165266c5cc553a2ca0a3c9")}, # Filtro
+            { "$inc": {"itens.pizza.quantidade": 50} } # Edição
+        )
